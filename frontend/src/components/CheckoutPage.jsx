@@ -1,4 +1,5 @@
 
+
 // import React, { useEffect, useRef, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { toast, ToastContainer } from "react-toastify";
@@ -8,60 +9,59 @@
 // const CheckoutPage = () => {
 //   const navigate = useNavigate();
 //   const [cart, setCart] = useState([]);
-//   const [timeLeft, setTimeLeft] = useState(240);
+//   const [timeLeft, setTimeLeft] = useState(60);
 //   const [userDetails, setUserDetails] = useState({
-//     name: "",
+//     userName: "",
 //     phone: "",
 //     address: "",
 //     transactionId: "",
 //   });
 //   const [error, setError] = useState("");
+//   const [bankDetails, setBankDetails] = useState(null);
 
 //   const timerRef = useRef();
-//   const releasedRef = useRef(false); // prevent double release
+//   const releasedRef = useRef(true);
 
 //   const releaseItemsOnce = () => {
 //     if (releasedRef.current) {
-//       console.log("[INFO] Release already triggered, skipping.");
+//       releasedRef.current = false;
 //       return;
 //     }
-//     releasedRef.current = true;
 
 //     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-//     console.log("[ACTION] Releasing items back to DB:", storedCart);
-
 //     axios
 //       .post("http://localhost:2500/ab/cd/business/people/release_items", { cart: storedCart })
-//       .then(() => console.log("[SUCCESS] Items released."))
-//       .catch((err) => console.error("[ERROR] Release failed:", err))
+//       .catch(() => { })
 //       .finally(() => {
 //         localStorage.removeItem("cart");
-//         console.log("[INFO] Cart cleared from localStorage.");
 //       });
 //   };
 
 //   useEffect(() => {
-//     console.log("[MOUNT] CheckoutPage mounted.");
 //     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
 //     setCart(storedCart);
-//     console.log("[INFO] Loaded cart from localStorage:", storedCart);
+
+//     if (storedCart.length > 0) {
+//       const businessName = storedCart[0].businessName;
+//       axios
+//         .get(`http://localhost:2500/ab/cd/business/bank-details/${businessName}`)
+//         .then((res) => setBankDetails(res.data.bankDetails))
+//         .catch((err) => {
+//           console.error("Failed to load bank details:", err);
+//         });
+//     }
 
 //     timerRef.current = setInterval(() => {
-//       setTimeLeft((prev) => {
-//         console.log(`[TIMER] Time left: ${prev - 1}s`);
-//         return prev - 1;
-//       });
+//       setTimeLeft((prev) => prev - 1);
 //     }, 1000);
 
 //     const handleBeforeUnload = (e) => {
-//       console.warn("[EVENT] Tab close or reload detected.");
 //       releaseItemsOnce();
 //       e.preventDefault();
 //       e.returnValue = "";
 //     };
 
 //     const handlePopState = () => {
-//       console.warn("[EVENT] Browser back navigation detected.");
 //       releaseItemsOnce();
 //     };
 
@@ -69,7 +69,6 @@
 //     window.addEventListener("popstate", handlePopState);
 
 //     return () => {
-//       console.log("[UNMOUNT] CheckoutPage unmounting.");
 //       clearInterval(timerRef.current);
 //       window.removeEventListener("beforeunload", handleBeforeUnload);
 //       window.removeEventListener("popstate", handlePopState);
@@ -79,7 +78,6 @@
 
 //   useEffect(() => {
 //     if (timeLeft <= 0) {
-//       console.warn("[TIMEOUT] Time expired. Redirecting...");
 //       toast.info("Time expired. Returning to home.");
 //       releaseItemsOnce();
 //       clearInterval(timerRef.current);
@@ -90,40 +88,35 @@
 //   const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 //   const handleInputChange = (e) => {
-//     console.log(`[FORM] ${e.target.name} updated to`, e.target.value);
 //     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
 //   };
 
 //   const handleCheckout = async () => {
-//     const { name, phone, address, transactionId } = userDetails;
+//     const { userName, phone, address, transactionId } = userDetails;
 
-//     if (!name || !phone || !address || !transactionId) {
-//       console.warn("[VALIDATION] Incomplete form submission.");
+//     if (!userName || !phone || !address || !transactionId) {
 //       setError("Please fill all fields.");
 //       return;
 //     }
 
+
 //     try {
-//       console.log("[ACTION] Attempting to place order...");
-//       await axios.post("http://localhost:2500/api/confirm-order", {
+//       const res = await axios.post("http://localhost:2500/ab/cd/confirm-order", {
 //         cart,
 //         ...userDetails,
 //       });
-
-//       console.log("[SUCCESS] Order placed successfully.");
+//       console.log("order placed")
 //       localStorage.removeItem("cart");
 //       clearInterval(timerRef.current);
 //       releasedRef.current = true;
-//       toast.success("Order placed!");
+//       toast.success(`Order placed! Order #${res.data.orderNumber}`);
 //       setTimeout(() => navigate("/"), 2000);
 //     } catch (err) {
-//       console.error("[ERROR] Order confirmation failed:", err);
 //       toast.error("Order failed.");
 //     }
 //   };
 
 //   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-//   console.log("[INFO] Cart total:", total);
 
 //   return (
 //     <div className="checkout_container">
@@ -153,9 +146,9 @@
 //         {error && <p className="checkout_error">{error}</p>}
 //         <input
 //           type="text"
-//           name="name"
+//           name="userName"
 //           placeholder="Full Name"
-//           value={userDetails.name}
+//           value={userDetails.userName} // ✅ was userDetails.name (wrong key)
 //           onChange={handleInputChange}
 //           className="checkout_input"
 //         />
@@ -187,6 +180,17 @@
 //         </button>
 //       </div>
 
+//       {bankDetails && (
+//         <div className="checkout_bankDetails">
+//           <h3>Seller Bank Details</h3>
+//           <p><strong>Account Holder:</strong> {bankDetails.AccountHolderName}</p>
+//           <p><strong>Account Number:</strong> {bankDetails.AccountNumber}</p>
+//           <p><strong>IFSC Code:</strong> {bankDetails.IFSC}</p>
+//           <p><strong>Bank Name:</strong> {bankDetails.BankName}</p>
+//           <p><strong>UPI ID:</strong> {bankDetails.UPIId}</p>
+//         </div>
+//       )}
+
 //       <ToastContainer position="top-right" autoClose={2000} />
 //     </div>
 //   );
@@ -202,6 +206,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(orderId);
+  };
+
   const [cart, setCart] = useState([]);
   const [timeLeft, setTimeLeft] = useState(60);
   const [userDetails, setUserDetails] = useState({
@@ -212,6 +220,8 @@ const CheckoutPage = () => {
   });
   const [error, setError] = useState("");
   const [bankDetails, setBankDetails] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [orderId, setOrderId] = useState(null);
 
   const timerRef = useRef();
   const releasedRef = useRef(true);
@@ -224,7 +234,9 @@ const CheckoutPage = () => {
 
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     axios
-      .post("http://localhost:2500/ab/cd/business/people/release_items", { cart: storedCart })
+      .post("http://localhost:2500/ab/cd/business/people/release_items", {
+        cart: storedCart,
+      })
       .catch(() => { })
       .finally(() => {
         localStorage.removeItem("cart");
@@ -238,13 +250,15 @@ const CheckoutPage = () => {
     if (storedCart.length > 0) {
       const businessName = storedCart[0].businessName;
       axios
-        .get(`http://localhost:2500/ab/cd/business/bank-details/${businessName}`)
+        .get(
+          `http://localhost:2500/ab/cd/business/bank-details/${businessName}`
+        )
         .then((res) => setBankDetails(res.data.bankDetails))
         .catch((err) => {
           console.error("Failed to load bank details:", err);
         });
     }
-   
+
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
     }, 1000);
@@ -279,7 +293,8 @@ const CheckoutPage = () => {
     }
   }, [timeLeft]);
 
-  const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  const formatTime = (s) =>
+    `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
   const handleInputChange = (e) => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
@@ -293,18 +308,17 @@ const CheckoutPage = () => {
       return;
     }
 
-
     try {
       const res = await axios.post("http://localhost:2500/ab/cd/confirm-order", {
         cart,
         ...userDetails,
       });
-      console.log("order placed")
+
       localStorage.removeItem("cart");
       clearInterval(timerRef.current);
       releasedRef.current = true;
-      toast.success(`Order placed! Order #${res.data.orderNumber}`);
-      setTimeout(() => navigate("/"), 2000);
+      setOrderId(res.data.orderNumber); // order ID popup
+      setShowPopup(true); // show the popup
     } catch (err) {
       toast.error("Order failed.");
     }
@@ -342,7 +356,7 @@ const CheckoutPage = () => {
           type="text"
           name="userName"
           placeholder="Full Name"
-          value={userDetails.userName} // ✅ was userDetails.name (wrong key)
+          value={userDetails.userName}
           onChange={handleInputChange}
           className="checkout_input"
         />
@@ -385,7 +399,38 @@ const CheckoutPage = () => {
         </div>
       )}
 
-      <ToastContainer position="top-right" autoClose={2000} />
+      {showPopup && (
+        <div className="popup_overlay">
+          <div className="popup_content">
+            <h3>✅ Order Confirmed</h3>
+            <p>Your order has been placed successfully!</p>
+            <p>
+              <strong>Order ID:</strong> {orderId}{" "}
+              <span
+    className="copy_icon"
+    onClick={copyToClipboard}
+    title="Copy to clipboard"
+  >
+    📋
+  </span>
+            </p>
+            <p style={{ color: "red", fontWeight: "bold" }}>
+              Please note down your Order ID to track your order later.
+            </p>
+            <button
+              onClick={() => {
+                setShowPopup(false);
+                navigate("/");
+              }}
+            >
+              Go to Home
+            </button>
+          </div>
+        </div>
+      )}
+
+
+      <ToastContainer position="top-right" autoClose={1000} />
     </div>
   );
 };

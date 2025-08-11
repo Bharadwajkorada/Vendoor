@@ -1053,6 +1053,43 @@ body, html, #root {
   background-color: #1d4ed8; /* Blue-700 */
 }
 
+.popup_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup_content {
+  background: #7c7f9e;
+  padding: 20px 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
+.copy_icon {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 4px 6px;
+  border: 1px solid #e8efef;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #007bff;
+  transition: background 0.2s, color 0.2s;
+}
+
+.copy_icon:hover {
+  color: white;
+}
+
 
 /* AllBusinesses.css */
 
