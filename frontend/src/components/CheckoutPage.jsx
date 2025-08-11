@@ -204,7 +204,7 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
-const BASE_URL = "https://vendoor-backend.onrender.com";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const CheckoutPage = () => {
   const navigate = useNavigate();

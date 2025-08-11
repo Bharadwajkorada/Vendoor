@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const BASE_URL = "https://vendoor-backend.onrender.com";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Login = () => {
   const [email, setEmail] = useState('');

@@ -25,7 +25,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const BASE_URL = "https://vendoor-backend.onrender.com";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const BusinessDashboard = () => {
   const { businessId } = useParams();

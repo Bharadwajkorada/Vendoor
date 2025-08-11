@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-const BASE_URL = "https://vendoor-backend.onrender.com";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const AllBusinesses = () => {
   const [businesses, setBusinesses] = useState([]);

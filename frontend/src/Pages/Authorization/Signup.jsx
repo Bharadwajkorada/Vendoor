@@ -135,7 +135,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 axios.defaults.withCredentials = true;
 
-const BASE_URL = "https://vendoor-backend.onrender.com";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const Signup = () => {
   const navigate = useNavigate();
 
