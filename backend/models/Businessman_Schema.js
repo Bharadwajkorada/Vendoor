@@ -29,7 +29,7 @@ const ItemSchema = new Schema({
   image: { type: String, default: "" },
 });
 
-// 🆕 Bank Details Schema (added only this)
+//  Bank Details Schema (added only this)
 const BankDetailsSchema = new Schema({
   AccountHolderName: { type: String, required: true },
   AccountNumber: { type: String, required: true },
