@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+const BASE_URL = "https://vendoor-backend.onrender.com";
+
 const AllBusinesses = () => {
   const [businesses, setBusinesses] = useState([]);
 
   useEffect(() => {
     const fetchBusinesses = async () => {
       try {
-        const res = await axios.get(`http://localhost:2500/ab/cd/all_businesses`);
+        const res = await axios.get(`${BASE_URL}/ab/cd/all_businesses`);
         setBusinesses(res.data);
       } catch (error) {
         console.error("Error fetching businesses", error);

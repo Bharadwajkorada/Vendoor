@@ -2,11 +2,13 @@ import React , { useEffect, useState }from "react";
 import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const BASE_URL = "https://vendoor-backend.onrender.com";
+
 const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get("http://localhost:2500/ab/cd/checkauth", { withCredentials: true })
+    axios.get(`${BASE_URL}/ab/cd/checkauth`, { withCredentials: true })
       .then(res => setIsAuthenticated(true))
       .catch((err) => {
         if (err.response && err.response.status === 401) {
@@ -21,7 +23,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:2500/ab/cd/logout", {}, { withCredentials: true });
+      await axios.post(`${BASE_URL}/ab/cd/logout`, {}, { withCredentials: true });
       setIsAuthenticated(false);
       navigate(`/`)
     } catch (err) {

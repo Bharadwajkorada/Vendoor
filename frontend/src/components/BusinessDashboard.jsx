@@ -25,6 +25,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+const BASE_URL = "https://vendoor-backend.onrender.com";
+
 const BusinessDashboard = () => {
   const { businessId } = useParams();
   const [business, setBusiness] = useState(null);
@@ -36,7 +38,7 @@ const BusinessDashboard = () => {
 
   const fetchBusinessData = async () => {
     try {
-      const res = await axios.get(`http://localhost:2500/ab/cd/business/${businessId}`, { withCredentials: true });
+      const res = await axios.get(`${BASE_URL}/ab/cd/business/${businessId}`, { withCredentials: true });
       setBusiness(res.data.business);
       setItems(res.data.business.Items);
     } catch (err) {
@@ -47,7 +49,7 @@ const BusinessDashboard = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`http://localhost:2500/ab/cd/orders/business/${business?.Businessname}`);
+      const res = await axios.get(`${BASE_URL}/ab/cd/orders/business/${business?.Businessname}`);
       setOrders(res.data.orders);
     } catch (err) {
       toast.error("Failed to fetch orders");
@@ -56,7 +58,7 @@ const BusinessDashboard = () => {
 
   const fetchSalesDashboard = async () => {
     try {
-      const res = await axios.get(`http://localhost:2500/ab/cd/orders/dashboard/${business?.Businessname}`);
+      const res = await axios.get(`${BASE_URL}/ab/cd/orders/dashboard/${business?.Businessname}`);
       setSalesData(res.data);
     } catch (err) {
       toast.error("Failed to fetch dashboard data");
@@ -86,7 +88,7 @@ const BusinessDashboard = () => {
     }
     try {
       const res = await axios.post(
-        `http://localhost:2500/ab/cd/business/${businessId}/item`,
+        `${BASE_URL}/ab/cd/business/${businessId}/item`,
         newItem,
         { withCredentials: true }
       );
@@ -101,7 +103,7 @@ const BusinessDashboard = () => {
   const handleDeleteItem = async (itemId) => {
     try {
       const res = await axios.delete(
-        `http://localhost:2500/ab/cd/business/${businessId}/item/${itemId}`,
+        `${BASE_URL}/ab/cd/business/${businessId}/item/${itemId}`,
         { withCredentials: true }
       );
       setItems(res.data.items);
@@ -114,7 +116,7 @@ const BusinessDashboard = () => {
   const handleUpdateItem = async (itemId, updated) => {
     try {
       const res = await axios.put(
-        `http://localhost:2500/ab/cd/business/${businessId}/item/${itemId}`,
+        `${BASE_URL}/ab/cd/business/${businessId}/item/${itemId}`,
         updated,
         { withCredentials: true }
       );
@@ -127,7 +129,7 @@ const BusinessDashboard = () => {
 
   const updateOrder = async (orderId, status) => {
     try {
-      await axios.put(`http://localhost:2500/ab/cd/orders/${orderId}/status`, { status });
+      await axios.put(`${BASE_URL}/ab/cd/orders/${orderId}/status`, { status });
       toast.success(`Order ${status}`);
       fetchOrders();
     } catch {
@@ -216,7 +218,7 @@ const BusinessDashboard = () => {
               </ul>
               <div className="order_actions">
                 <button onClick={async () => {
-                  await axios.put(`http://localhost:2500/ab/cd/orders/${order._id}/dispatched`, { dispatched: true });
+                  await axios.put(`${BASE_URL}/ab/cd/orders/${order._id}/dispatched`, { dispatched: true });
                   toast.success("Order marked as dispatched");
                   fetchOrders();
                 }}>Mark as Dispatched</button>

@@ -209,6 +209,8 @@ import { useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const BASE_URL = "https://vendoor-backend.onrender.com";
+
 const PublicBusinessPage = () => {
   const { businessName } = useParams();
   const [business, setBusiness] = useState(null);
@@ -221,7 +223,7 @@ const PublicBusinessPage = () => {
 
     const fetchBusinessData = async () => {
       try {
-        const res = await axios.get(`http://localhost:2500/ab/cd/business/people/${businessName}`);
+        const res = await axios.get(`${BASE_URL}/ab/cd/business/people/${businessName}`);
         setBusiness(res.data.business);
         setItems(res.data.business.items || []);
       } catch (err) {
@@ -272,7 +274,7 @@ const PublicBusinessPage = () => {
 
   const handleBuyNow = async () => {
     try {
-      const res = await axios.post(`http://localhost:2500/ab/cd/business/people/place_order/${businessName}`, { cart });
+      const res = await axios.post(`${BASE_URL}/ab/cd/business/people/place_order/${businessName}`, { cart });
       const { reservedItems, unavailableItems } = res.data;
 
       if (unavailableItems.length > 0) {

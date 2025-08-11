@@ -204,6 +204,8 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
+const BASE_URL = "https://vendoor-backend.onrender.com";
+
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const copyToClipboard = () => {
@@ -234,7 +236,7 @@ const CheckoutPage = () => {
 
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     axios
-      .post("http://localhost:2500/ab/cd/business/people/release_items", {
+      .post(`${BASE_URL}/ab/cd/business/people/release_items`, {
         cart: storedCart,
       })
       .catch(() => { })
@@ -251,7 +253,7 @@ const CheckoutPage = () => {
       const businessName = storedCart[0].businessName;
       axios
         .get(
-          `http://localhost:2500/ab/cd/business/bank-details/${businessName}`
+          `${BASE_URL}/ab/cd/business/bank-details/${businessName}`
         )
         .then((res) => setBankDetails(res.data.bankDetails))
         .catch((err) => {
@@ -309,7 +311,7 @@ const CheckoutPage = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:2500/ab/cd/confirm-order", {
+      const res = await axios.post(`${BASE_URL}/ab/cd/confirm-order`, {
         cart,
         ...userDetails,
       });

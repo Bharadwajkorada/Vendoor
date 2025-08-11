@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const BASE_URL = "https://vendoor-backend.onrender.com";
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://localhost:2500/ab/cd/login', // Adjust this if needed
+        `${BASE_URL}/ab/cd/login`, // Adjust this if needed
         { Email: email, Password: password },
         { withCredentials: true }
       );

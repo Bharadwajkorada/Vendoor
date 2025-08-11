@@ -11,6 +11,8 @@ const features = [
 //   { icon: '🌍', text: 'Local Business Visibility' }
 ];
 
+
+
 const Features = () => {
   return (
     <section className="features-section">

@@ -135,6 +135,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 axios.defaults.withCredentials = true;
 
+const BASE_URL = "https://vendoor-backend.onrender.com";
 const Signup = () => {
   const navigate = useNavigate();
 
@@ -176,7 +177,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:2500/ab/cd/register', formData, {
+      const res = await axios.post(`${BASE_URL}/ab/cd/register`, formData, {
         withCredentials: true,
       });
       toast.success(res.data.message || 'Registered successfully');
